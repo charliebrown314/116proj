@@ -1,0 +1,64 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+.banner {
+  position: absolute;
+  top:0;
+  background:linear-gradient(to bottom, black , darkgray);
+  width:100%;
+  text-align: center;
+  font-size: 10px;
+  color:white;
+  left:0;
+  font-family: "Book Antiqua";
+  z-index: 0;
+}
+.buttons {
+  text-align: center;
+  left: 0;
+  font-size: 40px;
+  font-family: "Book Antiqua";
+  border-radius: 100px;
+  background-color: lightblue;
+}
+.picture {
+  background-size: contain;
+  opacity: 0.65;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.parent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -250%)
+}
+.button1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%)
+}
+
+.button2  {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%)
+}
+.button3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 200%)
+}
+@keyframes fadeOut {
+  from {}
+  to {}
+}

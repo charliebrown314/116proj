@@ -1,0 +1,55 @@
+@main("DBDemo"){
+    <div id="1" style="width: 50%;
+        float: left;">
+    <form>
+        Name:
+        <input type="text" name="username" ><br>
+        Class:<br>
+        <input type="radio" name="profession" value="Warrior">Warrior<br>
+        <input type="radio" name="profession" value="Wizard">Wizard<br>
+        <input type="radio" name="profession" value="Ranger">Ranger<br>
+            @*<script>
+            'addUserForm(document.getElementsByName("username")[0].value,
+            checkedRadio(document.getElementsByName("profession")))'</script>*@
+        <input type="button" id="createUser" value="Create Character"><br>
+            <script type="text/javascript">
+            $(document).ready(function(){
+            $("input[id='createUser']").click(function(){
+            var radioValue = $("input[name='profession']:checked").val();
+            if(radioValue){
+                addUserForm(document.getElementsByName("username")[0].value, radioValue);
+            }
+            });
+            });
+            </script>
+    </form>
+    <input type="button" value="Show all Users" onclick='
+    document.getElementById("allUsers").innerText = httpGet("allUsers")'><br><hr style="width: 25em;
+        float: left;"><br>
+    <div id="allUsers" style="background: lightgrey; border: 1px solid gray; border-radius: .5em;
+        width: 25em; height: 25em;"></div>
+    </div>
+    <div id="2" style="width: 50%; float: right">
+        <form>
+            Name:
+            <input type="text" name="searchName"><br>
+            <input type="button" value="Search User by Name" onclick='
+            document.getElementById("userByNameField").innerText = httpGet("userByName?name=" +
+             document.getElementsByName("searchName")[0].value)'><br><hr style="width: 25em;
+                float: left;"><br>
+        </form>
+        <div id="userByNameField" style="width: 25em; height: 10em; background-color: lightgrey;
+            border: 1px solid grey; border-radius: .5em"></div><br><hr style="width: 25em;
+        float: left;"><br>
+        <form>
+            ID:
+            <input type="text" name="searchID"><br>
+            <input type="button" value="Search User by Id" onclick='
+            document.getElementById("userByIDField").innerText = httpGet("userById?id=" +
+            document.getElementsByName("searchID")[0].value)'><br><hr style="width: 25em;
+                float: left;"><br>
+        </form>
+        <div id="userByIDField" style="width: 25em; height: 2em; background-color: lightgrey;
+            border: 1px solid grey; border-radius: .5em;"></div>
+    </div>
+}
