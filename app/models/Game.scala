@@ -38,7 +38,7 @@ class Game {
     new Wall(new Location(475, 210), 150, 10),
     new Wall(new Location(525,170), 10, 150),
     new Wall(new Location(725,210), 150, 10),
-    new Wall(new Location(525, 395), 10, 150),
+    new Wall(new Location(525, 395), 10, 150)
   )
   var projectiles: List[Projectile] = List()
   def addPlayer(character: Character, team: String): Unit = {
