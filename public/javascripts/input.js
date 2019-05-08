@@ -1,5 +1,6 @@
 function keyPressHandler(event){
-    socket.send(JSON.stringify({"action": "keydown", "key": event.code}))
+    if(event.code === "KeyT"){socket.send("runTest")}
+    else {socket.send(JSON.stringify({"action": "keydown", "key": event.code}))}
 }
 function keyUpHandler(event) {
     socket.send(JSON.stringify({"action": "keyup", "key": event.code}))

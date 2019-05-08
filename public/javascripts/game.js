@@ -7,6 +7,7 @@ socket.onmessage = function (event) {
         var msg = JSON.parse(event.data);
         if(msg.hasOwnProperty('gameState')) {
             if (JSON.parse(msg.gameState).hasOwnProperty('losingTeam')){gameOver(msg)}
+            else if(JSON.parse(msg.gameState).hasOwnProperty('test')){console.log(JSON.parse(msg.gameState).test)}
             else {updateGame(msg)}}
         else if(msg.hasOwnProperty('id')){id = msg['id']}
     }

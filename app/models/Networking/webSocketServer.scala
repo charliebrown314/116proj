@@ -14,6 +14,7 @@ class webSocketServer(out: ActorRef) extends Actor{
   val gameActor: ActorRef = actorSystem.actorOf(Props(classOf[GameActor], webSocketServer.game))
   val character = new Character()
   var keysDown: List[String] = List()
+  var playerCount: Int = 0
   def randTeam(): String = {
     val index = math.random() * 3
     val teams = List("red", "blue", "yellow", "purple")
@@ -22,6 +23,7 @@ class webSocketServer(out: ActorRef) extends Actor{
   var client: ActorRef = _
 
   override def postStop(): Unit = {
+    playerCount -= 1
     gameActor ! Logout(this.character)
     gameActor ! PoisonPill
   }
@@ -30,6 +32,9 @@ class webSocketServer(out: ActorRef) extends Actor{
       val parsed = Json.parse(msg)
       val action = (parsed \ "action").as[String]
       action match {
+        case "runTest" => {
+          gameActor ! Test
+        }
         case "keydown" =>
           val key = (parsed \ "key").as[String]
           if(!keysDown.contains(key)) keysDown = keysDown :+ key
@@ -42,6 +47,7 @@ class webSocketServer(out: ActorRef) extends Actor{
 //          out ! Json.stringify(Json.toJson(Map("gameState" ->("You clicked at x = " + (pos \ "x").as[Double] + ", y = " + (pos \ "y").as[Double]))))
         case "connected" =>
           val id = Math.floor((1 + Math.random()) * 0x10000).toString.substring(1)
+          playerCount += 1
           this.character.id = id
           out ! Json.stringify(Json.toJson(Map("id" -> id)))
           gameActor ! Login(this.character, randTeam())
