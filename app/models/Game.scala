@@ -7,17 +7,38 @@ import play.api.libs.json.Json
 class Game {
   var players: List[Character] = List()
   var CPs: List[CP] = List(
-    new CP(new Location(400,400), "red"),
-    new CP(new Location(400,500),"yellow"),
-    new CP(new Location(400,300), "blue"),
-    new CP(new Location(400,200), "purple"),
-    new CP(new Location(400,100), "grey")
+    new CP(new Location(1180,20), "red"),
+    new CP(new Location(20,20), "yellow"),
+    new CP(new Location(20,555), "blue"),
+    new CP(new Location(1180,555), "purple"),
+    new CP(new Location(300,125), "grey"),
+    new CP(new Location(900,125), "grey"),
+    new CP(new Location(300,450), "grey"),
+    new CP(new Location(900,450), "grey"),
+    new CP(new Location(600,287.5), "grey")
   )
   var walls: List[Wall] = List(
-    new Wall(new Location(1200, 0), 575, 1),
-    new Wall(new Location(0,0),575, 1),
-    new Wall(new Location(0,0), 1, 1200),
-    new Wall(new Location(0, 575), 1, 1200)
+    new Wall(new Location(1190, 0), 575, 10),
+    new Wall(new Location(0,0),575, 10),
+    new Wall(new Location(0,0), 10, 1200),
+    new Wall(new Location(0, 565), 10, 1200),
+
+    new Wall(new Location(280, 105), 100, 10),
+    new Wall(new Location(290,105), 10, 100),
+
+    new Wall(new Location(910,105), 100, 10),
+    new Wall(new Location(920, 105), 10, -100),
+
+    new Wall(new Location(280, 470), -100, 10),
+    new Wall(new Location(280,460), 10, 100),
+
+    new Wall(new Location(910, 470), -100, 10),
+    new Wall(new Location(910,460), 10, -100),
+
+    new Wall(new Location(475, 210), 150, 10),
+    new Wall(new Location(525,170), 10, 150),
+    new Wall(new Location(725,210), 150, 10),
+    new Wall(new Location(525, 395), 10, 150)
   )
   var projectiles: List[Projectile] = List()
   def addPlayer(character: Character, team: String): Unit = {
