@@ -5,6 +5,7 @@ import java.awt.geom.Line2D
 import play.api.libs.json.Json
 
 class Game {
+  var gameOver: (Boolean, String, Long) = (false, "grey", 0)
   var players: List[Character] = List()
   var CPs: List[CP] = List(
     new CP(new Location(1180,20), "red"),
@@ -53,9 +54,12 @@ class Game {
   }
   def respawn(player: Character): Unit ={
     val pts: List[CP] = CPs.filter(_.team == player.team)
-    val spawn = pts((math.random() * pts.indices.length).toInt)
-    player.location = new Location(spawn.location.x,spawn.location.y)
-    player.HP = 100
+    if (pts.nonEmpty) {
+      val spawn = pts((math.random() * pts.indices.length).toInt)
+      player.location = new Location(spawn.location.x, spawn.location.y)
+      player.HP = 100
+    }
+    else gameOver = (true, player.team, System.nanoTime())
   }
   def newLoc(player: Character, keysPressed: List[String]): Location ={
     var x = player.location.x
@@ -130,70 +134,93 @@ class Game {
     bool
   }
   def capturePoints(time: Long): Unit={
-    CPs.foreach(cp =>
-      for(player <- players){
-        if(player.location.distance(cp.location) <= 7 && player.team != cp.team){
-          if(!cp.occupied) {
-            cp.lastUpdateTime = time
+    val cpDistance = (char: Character, cp: CP) => char.location.distance(cp.location)
+    if(players.nonEmpty) {
+      for (cp <- CPs) {
+        val player = players.minBy(char => cpDistance(char, cp))
+        if (cpDistance(player, cp) <= 7 && player.team != cp.team) {
+          if(!cp.occupied){
             cp.occupied = true
+            cp.lastUpdateTime = time
           }
           else{
             val timeElapsed = (time - cp.lastUpdateTime) / 1000000000
-              if(cp.team != "grey"){
-                if(timeElapsed >= 2) {
-                  cp.team = "grey"
-                  cp.lastUpdateTime = time
-                }
-              }
-            else{
-                if(timeElapsed >= 2) {
-                  cp.team = player.team
-                  cp.occupied = false
-                }
-              }
-
+            if(cp.team == "grey" && timeElapsed > 2 && timeElapsed < 4){
+              cp.team = player.team
+              cp.occupied = false
+            }
+            else if(cp.team != "grey" && timeElapsed > 2 && timeElapsed < 4){
+              cp.team = "grey"
+              cp.lastUpdateTime = time
+            }
           }
         }
         else cp.occupied = false
       }
+    }
+  }
+  def resetGame(): Unit ={
+    CPs = List(
+      new CP(new Location(1180,20), "red"),
+      new CP(new Location(20,20), "yellow"),
+      new CP(new Location(20,555), "blue"),
+      new CP(new Location(1180,555), "purple"),
+      new CP(new Location(300,125), "grey"),
+      new CP(new Location(900,125), "grey"),
+      new CP(new Location(300,450), "grey"),
+      new CP(new Location(900,450), "grey"),
+      new CP(new Location(600,287.5), "grey")
     )
+    players.foreach(player => respawn(player))
+    projectiles.foreach(proj => proj.collide(this))
   }
   def update(): String ={
-    checkForHit()
-    moveProjectiles()
-    checkHP()
-    capturePoints(System.nanoTime())
-    Json.stringify(Json.toJson(
-      Map("players" -> Json.toJson(this.players.map(x => Json.toJson(
-        Map(
-          "x" -> Json.toJson(x.location.x),
-          "y" -> Json.toJson(x.location.y),
-          "team" -> Json.toJson(x.team),
-          "HP" -> Json.toJson(x.HP),
-          "id" -> Json.toJson(x.id)
+    if(gameOver._1){
+      val timeRemaining = 5 -((System.nanoTime - gameOver._3) / 1000000000)
+      if (timeRemaining <= 0) {
+        gameOver = (false, "grey", 0)
+        resetGame()
+        Json.stringify(Json.toJson(Map("losingTeam" -> gameOver._2, "restartTimer" -> "0")))
+      }
+      else Json.stringify(Json.toJson(Map("losingTeam" -> gameOver._2, "restartTimer" -> timeRemaining.toString)))
+    }
+    else {
+      checkForHit()
+      moveProjectiles()
+      checkHP()
+      capturePoints(System.nanoTime())
+      Json.stringify(Json.toJson(
+        Map("players" -> Json.toJson(this.players.map(x => Json.toJson(
+          Map(
+            "x" -> Json.toJson(x.location.x),
+            "y" -> Json.toJson(x.location.y),
+            "team" -> Json.toJson(x.team),
+            "HP" -> Json.toJson(x.HP),
+            "id" -> Json.toJson(x.id)
+          )
+        ))
+        ), "CPs" -> Json.toJson(this.CPs.map(x =>
+          Map(
+            "x" -> Json.toJson(x.location.x - 25 / 2),
+            "y" -> Json.toJson(x.location.y - 25 / 2),
+            "team" -> Json.toJson(x.team)
+          )
+        )), "projectiles" -> Json.toJson(this.projectiles.map(x =>
+          Map(
+            "x" -> Json.toJson(x.location.x),
+            "y" -> Json.toJson(x.location.y),
+          )
         )
-      ))
-    ), "CPs" -> Json.toJson(this.CPs.map(x =>
-      Map(
-        "x" -> Json.toJson(x.location.x - 25/2),
-        "y" -> Json.toJson(x.location.y - 25/2),
-        "team" -> Json.toJson(x.team)
-      )
-    )), "projectiles" -> Json.toJson(this.projectiles.map(x =>
-        Map(
-          "x" -> Json.toJson(x.location.x),
-          "y" -> Json.toJson(x.location.y),
-        )
-      )
-      ),
-      "walls" -> Json.toJson(this.walls.map(wall =>
-        Map(
-          "x" -> Json.toJson(wall.location.x),
-          "y" -> Json.toJson(wall.location.y),
-          "h" -> Json.toJson(wall.length),
-          "w" -> Json.toJson(wall.width)
-        )
-      ))
-      )))
+        ),
+          "walls" -> Json.toJson(this.walls.map(wall =>
+            Map(
+              "x" -> Json.toJson(wall.location.x),
+              "y" -> Json.toJson(wall.location.y),
+              "h" -> Json.toJson(wall.length),
+              "w" -> Json.toJson(wall.width)
+            )
+          ))
+        )))
+    }
   }
 }

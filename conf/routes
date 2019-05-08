@@ -3,8 +3,9 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 #HTML Routing
-GET     /                           controllers.HomeController.index()
+GET     /                           controllers.HomeController.game()
 GET     /game.html                  controllers.HomeController.game()
+GET     /holdingIndex               controllers.HomeController.index()
 GET     /instructions.html          controllers.HomeController.instructions()
 GET     /dbDemo                     controllers.HomeController.dbDemo()
 

@@ -1,14 +1,11 @@
 var socket = new WebSocket("ws://localhost:9000/socket");
 var id = undefined;
-var cursor = {x:0, y:0};
 socket.onmessage = function (event) {
     // received a message from the server
     if(event.data !== undefined){
         var msg = JSON.parse(event.data);
-        if(msg.hasOwnProperty('gameState')) {
-            if (JSON.parse(msg.gameState).hasOwnProperty('losingTeam')){gameOver(msg)}
-            else {updateGame(msg)}}
-        else if(msg.hasOwnProperty('id')){id = msg['id']}
+        if(msg.hasOwnProperty('gameState')) {updateGame(msg)}
+        else{id = msg['id']}
     }
 };
 
@@ -20,20 +17,6 @@ socket.onmessage = function (event) {
         else if (player.team === "blue"){return '#2C4DE1'}
         else if (player.team === "purple"){return '#DB2CE1'}
         else if (player.team === "grey"){return '#899191'}
-    }
-    function gameOver(json) {
-        var gameState = JSON.parse(json.gameState);
-        console.log(gameState);
-        var team = gameState['losingTeam'];
-        var time = gameState['restartTimer'];
-        context.clearRect(0,0, game.width,game.height);
-        context.fillStyle = "red";
-        context.font = "italic bold small-caps 75px Arial";
-        context.textAlign = "center";
-        context.fillText("Game Over", game.width/2, game.height/2);
-        context.font = "italic bold small-caps 25px Arial";
-        context.fillText(`the ${team} team has lost`, game.width/2, (game.height/2) + 35);
-        context.fillText(`Time Remaining until Restart: ${time}`, game.width/2, (game.height/2) + 70)
     }
     function updateGame(gamestate) {
         var gameState = JSON.parse(gamestate.gameState);
@@ -64,22 +47,10 @@ socket.onmessage = function (event) {
         context.fill();
         var color = '#000';
         if(playerID === id) {
-            color = '#fff';
-            context.strokeStyle = color;
-            context.stroke();
-            var angle = Math.atan2(cursor['y'] - y, cursor['x'] - x);
-            context.fillStyle = '#000';
-            context.translate(x,y);
-            context.rotate(angle - (Math.PI/2));
-            context.fillRect(0.5,0,3,9);
-            context.rotate(-(angle -(Math.PI/2)));
-            context.translate(-x,-y);
+            color = '#fff'
         }
-        else {
-            context.strokeStyle = color;
-            context.stroke();
-        }
-
+        context.strokeStyle = color;
+        context.stroke()
     }
 
     function makeCP(x, y, team) {

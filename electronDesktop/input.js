@@ -7,7 +7,9 @@ function keyUpHandler(event) {
 function clickHandler(){
     const x = event.clientX;
     const y = event.clientY;
-    socket.send(JSON.stringify({"action": "click","pos":{"x": x, "y": y}}))
+    cursor['y'] = y;
+    cursor['x'] = x;
+    socket.send(JSON.stringify({"action": "click","pos":{"x": cursor['x'], "y": cursor['y']}}))
 }
 socket.onopen = function (ev) {
     socket.send(JSON.stringify({"action": "connected"}))
