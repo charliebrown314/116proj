@@ -27,18 +27,18 @@ class Game {
     new Wall(new Location(290,105), 10, 100),
 
     new Wall(new Location(910,105), 100, 10),
-    new Wall(new Location(920, 105), 10, -100),
+    new Wall(new Location(820, 105), 10, 100),
 
-    new Wall(new Location(280, 470), -100, 10),
+    new Wall(new Location(280, 370), 100, 10),
     new Wall(new Location(280,460), 10, 100),
 
-    new Wall(new Location(910, 470), -100, 10),
-    new Wall(new Location(910,460), 10, -100),
+    new Wall(new Location(910, 370), 100, 10),
+    new Wall(new Location(810,460), 10, 100),
 
     new Wall(new Location(475, 210), 150, 10),
     new Wall(new Location(525,170), 10, 150),
     new Wall(new Location(725,210), 150, 10),
-    new Wall(new Location(525, 395), 10, 150)
+    new Wall(new Location(525, 395), 10, 150),
   )
   var projectiles: List[Projectile] = List()
   def addPlayer(character: Character, team: String): Unit = {
