@@ -1,11 +1,8 @@
 package models
 
-abstract class Character(name: String){
-  var name1: String = name
-  var HP: Double
-  val Fireball: Double = 40.0
-  val Smite: Double = 20.0
-  val Pin: Double = 30.0
+import akka.actor.ActorRef
 
+class Character(var id: String = "0",var team: String = "grey", var location: Location = new Location(0,0)){
+  var HP: Double = 100.0
 }
 

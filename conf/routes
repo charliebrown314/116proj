@@ -4,8 +4,12 @@
 # ~~~~
 #HTML Routing
 GET     /                           controllers.HomeController.index()
+GET     /game.html                  controllers.HomeController.game()
 GET     /instructions.html          controllers.HomeController.instructions()
 GET     /dbDemo                     controllers.HomeController.dbDemo()
+
+#Socket
+GET     /socket                     controllers.HomeController.socket
 
 #Database Requests
 GET     /allUsers                   controllers.HomeController.allUsers()

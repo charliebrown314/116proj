@@ -1,4 +1,4 @@
-package tests
+/*package tests
 
 import models._
 import org.scalatest.FunSuite
@@ -37,3 +37,4 @@ class TestDamage extends FunSuite {
     assert(example9.HP == 60)
   }
 }
+*/
